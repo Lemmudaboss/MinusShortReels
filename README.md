@@ -4,52 +4,7 @@ Blocks **YouTube Shorts** and **Instagram Reels**, on your computer and on your 
 
 | | What you get |
 | --- | --- |
-| [**Android app**](#android-app) | Closes Shorts and Reels in the YouTube and Instagram apps as soon as they open. |
 | [**Chrome extension**](#chrome-extension) | Removes Shorts and Reels from youtube.com and instagram.com, and opens their links without the swipe feed. |
-
----
-
-## Android app
-
-**[Download ShortFormBlocker.apk](https://github.com/Juss699/Chrome-extension-shortform-blocker/releases/latest/download/ShortFormBlocker.apk)** (Android 8.0 or newer)
-
-### What it does
-- When the **Shorts player** opens in the YouTube app, or the **Reels player** opens in the Instagram app, it pauses it and presses Back for you, staying inside the app. You'll see a short "Short blocked" / "Reel blocked" message.
-- If a Short or Reel shrinks into the app's miniplayer or a floating picture-in-picture window, it gets paused there too.
-- Switch YouTube and Instagram on or off separately, or **pause for 5 minutes** (handy when a friend sends you a reel).
-- Counts how many Shorts and Reels it has blocked.
-- Needs no internet permission and has no ads or tracking. It only receives events from the YouTube and Instagram apps.
-
-It can't remove Shorts and Reels thumbnails from the feeds inside those apps. Android doesn't let one app change another's screen. But you can't open them and start scrolling.
-
-### Install
-1. On your phone, tap the download link above.
-2. Open the downloaded file. If Android asks, allow your browser to **install unknown apps**. If Play Protect warns about an unrecognised app, tap **More details → Install anyway**. It warns because the app isn't from the Play Store.
-3. Open **Short-Form Blocker** and tap **Open Accessibility settings**. Find Short-Form Blocker (often under "Downloaded apps" or "Installed apps") and turn it on.
-4. **Is the switch greyed out ("Restricted setting")?** Android 13 and newer do that for apps installed outside the Play Store. Go to **Settings → Apps → Short-Form Blocker**, tap **⋮** in the top corner, choose **Allow restricted settings**, then go back to step 3.
-
-When it says **Blocking is on**, you're done.
-
-**Updating:** download and install the new APK over the old one. If Android says the app conflicts with an existing one, uninstall the old version first. That happens if your copy is from before version 1.1.0, or if the build's signing key expired after months without a build.
-
-### If a Short or Reel gets through
-YouTube and Instagram sometimes rename their screens in app updates. To find the new names:
-1. In Short-Form Blocker, turn on **Record screen layout**.
-2. Open a Short or Reel that wasn't blocked, then come back to Short-Form Blocker.
-3. Tap **Share report** and send it to whoever maintains this repo (or open an issue). The report only lists layout names, like `reel_recycler`, never text or content.
-
-The fix is usually a one-line change to the ids in [`Platform.kt`](android/app/src/main/java/io/github/juss699/shortformblocker/Platform.kt).
-
-### How it works
-`BlockerService` is an [accessibility service](https://developer.android.com/guide/topics/ui/accessibility/service) subscribed only to `com.google.android.youtube` and `com.instagram.android`. On each screen change it checks for the view ids that exist only inside the full-screen Shorts/Reels player (`reel_recycler`, `reel_player_page_container`, `clips_viewer_view_pager`). When one fills the screen, it pauses playback (a media pause key plus briefly taking audio focus), then calls `performGlobalAction(GLOBAL_ACTION_BACK)`. It waits 1.5 s for the app to finish its transition before trying again. If two Backs don't close the player, it opens the app's own home feed. It never presses Home, because leaving YouTube while a video plays sends it into picture-in-picture. A player that has shrunk (miniplayer, or a picture-in-picture window found through `getWindows()`) is paused.
-
-### Build it yourself
-GitHub Actions builds the APK on every change to `android/` and publishes it as the [`android-latest` release](https://github.com/Juss699/Chrome-extension-shortform-blocker/releases/tag/android-latest). To build locally with Android Studio or the SDK installed:
-
-```bash
-cd android
-./gradlew assembleRelease   # -> app/build/outputs/apk/release/app-release.apk
-```
 
 ---
 
