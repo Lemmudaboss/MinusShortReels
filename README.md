@@ -1,6 +1,6 @@
 # Short-Form Blocker
 
-Blocks **YouTube Shorts** and **Instagram Reels**, on your computer and on your Android phone.
+Blocks **YouTube Shorts** and **Instagram Reels**, on your computer.
 
 | | What you get |
 | --- | --- |
